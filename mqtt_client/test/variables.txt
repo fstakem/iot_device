@@ -1,0 +1,3 @@
+mqtt_user:  fstakem
+mqtt_password: password
+mqtt_port: 1883

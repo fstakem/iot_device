@@ -1,0 +1,21 @@
+coap server
+    https://github.com/chrysn/aiocoap
+
+mqtt server
+    https://mosquitto.org/
+    https://github.com/eclipse/mosquitto
+
+coap client
+    https://github.com/hirotakaster/CoAP-simple-library
+    https://github.com/1248/microcoap               (alt implementation)
+    https://github.com/dgiannakop/Arduino-CoAP      (alt implementation)
+    https://github.com/automote/ESP-CoAP            (alt implementation)
+
+mqtt client
+    https://github.com/knolleary/pubsubclient
+
+enterprise patterns
+    http://www.enterpriseintegrationpatterns.com/
+
+coap info
+    http://coap.technology/impls.html
