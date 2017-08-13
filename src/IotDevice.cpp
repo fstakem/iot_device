@@ -3,26 +3,6 @@
 
 
 namespace IotDevice {
-    long get_sine_wave() {
-        static const unsigned long step_time = 2000;
-        static const float step_angle_rads = 0.261799f;
-        static unsigned long last_sample_time = millis();
-        static float current_angle_rads = 0.0f;
-        static long current_noise = random(15);
-
-        unsigned long current_time = millis();
-
-        if (current_time - last_sample_time > step_time) {
-            last_sample_time = current_time;
-            current_angle_rads = current_angle_rads + step_angle_rads;
-            current_noise = random(15);
-        }
-
-        float sine_value = sin(current_angle_rads) * 100;
-        long value = (long) sine_value + current_noise;
-
-        return value;
-    }
 
     IotDevice::Device init_device(int id, String name) {
         IotDevice::Device device;
