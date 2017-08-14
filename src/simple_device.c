@@ -7,7 +7,7 @@ using namespace IotDevice;
 
 // Wifi
 const char* SSID                    = "frugmunster";
-const char* SSID_PASSWORD           = "DH7ucq&LQQ^_Zw-9";
+const char* SSID_PASSWORD           = "----";
 
 // Loop
 const unsigned long loop_delay      = 100;

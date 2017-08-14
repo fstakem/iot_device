@@ -1,10 +1,11 @@
-#ifndef IOT_DEVICE_H
-#define IOT_DEVICE_H
+#ifndef MQTT_DEVICE_H
+#define MQTT_DEVICE_H
 
 #include <Wire.h>
 #include <Arduino.h>
 
-namespace IotDevice {
+namespace MqttDevice {
+
     // Initializers
     const int BUFFER_LEN                            = 200;
     const unsigned int NUM_SENSORS                  = 5;
@@ -18,27 +19,50 @@ namespace IotDevice {
     static const unsigned long step_time            = 2000;
     static const float step_angle_rads              = 0.261799f;
 
+    const char* mqtt_server                         = "hassbian.local";
+    const int mqtt_port                             = 1883;
+    const char* mqtt_node                           = "wemos_node/1";
+    const char* mqtt_id                             = "fstakem98765";
+    const char* mqtt_user                           = "fstakem";
+    const char* mqtt_password                       = "password";
+    const int mqtt_max_conn_attempts                = 3;
+
 
     struct Transmitter {
         unsigned long last_tx_time;
         unsigned long tx_interval;
     };
 
-    struct Sensor {
+    struct MqttSensor {
+        // Base
         int id;
         String name;
         bool tx_state;
         long data;
         Transmitter transmitter;
+
+        // Mqtt
+        String pub_data_topic;
+        String sub_tx_state_topic;
+        String sub_tx_rate_ms_topic;
     };
 
-    struct Device {
+    struct MqttDevice {
+        // Base
         int id;
         String name;
         char tx_buff[BUFFER_LEN];
         char rx_buff[BUFFER_LEN];
         char address_buff[BUFFER_LEN];
-        Sensor sensors[NUM_SENSORS];
+
+        // Mqtt
+        char* server;
+        int port;
+        char* mqtt_id;
+        char* user;
+        char* password;
+        int max_conn_attempts;
+        MqttSensor sensors[NUM_SENSORS];
     };
 
     struct SineWave {
@@ -56,8 +80,8 @@ namespace IotDevice {
 
 
     // Constructors
-    Device init_device(int id, String name);
-    Sensor init_sensor(int id, String name);
+    MqttDevice init_mqtt_device(int id, String name);
+    MqttSensor init_mqtt_sensor(int id, String name);
     Transmitter init_transmitter();
     SineWave init_sine_wave();
     SignalGenerator init_signal_generator();
@@ -65,6 +89,8 @@ namespace IotDevice {
     long get_next_sample(IotDevice::SineWave *sine_wave);
     void get_fake_data(IotDevice::Device *device, IotDevice::SignalGenerator *generator);
     void show_data(IotDevice::Device *device);
+    void mqtt_connect();
+    void mqtt_subscribe();
 };
 
 #endif
