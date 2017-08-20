@@ -13,7 +13,7 @@ class TestSensor: public Sensor {
 // ------------------------------------------------------------------------------------------
 private:
 
-SineWave sine_wave;
+Wave *wave;
 
 
 // PUBLIC
@@ -21,23 +21,22 @@ SineWave sine_wave;
 public:
 
 TestSensor()
-: Sensor()
-{
+: Sensor() {
 
 }
 
-TestSensor(int id, String name) 
+TestSensor(int id, String name, Wave *wave) 
 : Sensor(id, name)
 {
-    this->sine_wave = SineWave();
+    this->wave = wave;
 }
 
 ~TestSensor() {
-
+    delete this->wave;
 }
 
 long getSample() {
-    return this->sine_wave.getSample();
+    return this->wave->getSample();
 }
 
 

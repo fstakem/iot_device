@@ -29,6 +29,16 @@ int num_sensors;
 Sensor *sensors[NUM_SENSORS];
 long last_samples[NUM_SENSORS];
 
+virtual void createSensors() {
+    int i = 0;
+
+    for (i = 0; i < this->num_sensors; i++ ) {
+        int j = i + 1;
+        String name = "sensor_" + String(j);
+        this->sensors[i] = new Sensor(j, name);
+    }
+}
+
 
 // PUBLIC
 // ------------------------------------------------------------------------------------------
@@ -38,22 +48,14 @@ Device(int id, String name) {
     this->id = id;
     this->name = name;
     this->num_sensors = NUM_SENSORS;
-    this->createSensors(this->num_sensors);
+    this->createSensors();
 }
 
 ~Device() {
-
-}
-
-virtual void createSensors(int num_sensors) {
-    this->num_sensors = num_sensors;
-
-    int i = 0;
-
+    int i;
+    
     for (i = 0; i < this->num_sensors; i++ ) {
-        int j = i + 1;
-        String name = "sensor_" + String(j);
-        this->sensors[i] = new Sensor(j, name);
+        delete this->sensors[i];
     }
 }
 

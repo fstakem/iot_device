@@ -15,13 +15,13 @@ unsigned long last_record_time      = 0;
 
 // Globals
 WiFiClient wifi_client;
-TestDevice device = TestDevice(1, "device_1");
+TestDevice device = TestDevice(1, "device_1", "sine");
 int num_sensors;
 
 
 // Generic code
 // ----------------------------------------------------------------------------------------
-void setup_wifi() {
+void setupWifi() {
     delay(10);
     Serial.println();
     Serial.print("Connecting to ");
@@ -44,16 +44,24 @@ void setup() {
     pinMode(BUILTIN_LED, OUTPUT);
     digitalWrite(BUILTIN_LED, LOW);
     Serial.begin(9600);
-    setup_wifi();
+    setupWifi();
     delay(10000);
 
     num_sensors = device.getNumSensors();
     IPAddress server(192,168,2,207);
 }
 
+void showData(long *data) {
+    int i;
+    for(i =0; i < num_sensors; i++) {
+        Serial.println("Data " + String(i) + ": " + String(data[i]));
+    }
+}
+
 void loop() {
     delay(loop_delay);
-    device.getSamples();
+    long *data = device.getSamples();
+    showData(data);
     device.showSamples();
 }
 

@@ -3,9 +3,10 @@
 
 #include <Wire.h>
 #include <Arduino.h>
+#include "Wave.h"
 
 
-class SineWave {
+class SineWave: public Wave {
 
 // PRIVATE
 // ------------------------------------------------------------------------------------------
@@ -23,9 +24,10 @@ long value;
 // ------------------------------------------------------------------------------------------
 public:
 
-SineWave() {
-    this->step_time = 2000;
-    this->step_angle_rads = 0.261799f;
+SineWave(unsigned long step_time, float step_angle_rads)
+: Wave() {
+    this->step_time = step_time;
+    this->step_angle_rads = step_angle_rads;
     this->last_sample_time = 0;
     this->current_angle_rads = 0.0f;
     this->current_noise = 0;
