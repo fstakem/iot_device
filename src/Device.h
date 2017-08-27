@@ -3,10 +3,15 @@
 
 #include <Wire.h>
 #include <Arduino.h>
+#include "Sample.h"
 #include "Sensor.h"
+#include "Signal.h"
+#include "Transmitter.h"
 
-#define BUFFER_LEN 200
-#define NUM_SENSORS 5
+
+typedef Sensor* SensorPtr;
+typedef Transmitter* TransmitterPtr;
+typedef Signal* SignalPtr;
 
 
 class Device {
@@ -22,21 +27,21 @@ protected:
 
 int id;
 String name;
-char tx_buff[BUFFER_LEN];
-char rx_buff[BUFFER_LEN];
-char address_buff[BUFFER_LEN];
-int num_sensors;
-Sensor *sensors[NUM_SENSORS];
-long last_samples[NUM_SENSORS];
+unsigned int num_sensors;
+SensorPtr *sensors;
 
-virtual void createSensors() {
-    int i = 0;
+virtual void deleteSensors() {
+    if (this->sensors != NULL) {
+        int i;
 
-    for (i = 0; i < this->num_sensors; i++ ) {
-        int j = i + 1;
-        String name = "sensor_" + String(j);
-        this->sensors[i] = new Sensor(j, name);
+        for (i = 0; i < this->num_sensors; i++ ) {
+            delete this->sensors[i];
+        }
+
+        delete this->sensors;
     }
+
+    this->num_sensors = 0;
 }
 
 
@@ -47,37 +52,83 @@ public:
 Device(int id, String name) {
     this->id = id;
     this->name = name;
-    this->num_sensors = NUM_SENSORS;
-    this->createSensors();
+    this->num_sensors = 0;
+    this->sensors = NULL;
 }
 
 ~Device() {
+    this->deleteSensors();
+}
+
+int createSensor(SignalPtr signal, TransmitterPtr transmitter) {
+    int new_num_sensors = this->num_sensors + 1;
+    SensorPtr *new_sensors = new SensorPtr[new_num_sensors];
+
     int i;
-    
-    for (i = 0; i < this->num_sensors; i++ ) {
-        delete this->sensors[i];
+
+    for (i = 0; i < this->num_sensors; i++) {
+        new_sensors[i] = this->sensors[i];
     }
+
+    int id = this->num_sensors;
+    new_sensors[id] = new Sensor(id, signal, transmitter);
+
+    delete this->sensors;
+    this->sensors = new_sensors;
+    this->num_sensors = new_num_sensors;
+
+    return id;
+}
+
+bool removeSensor(unsigned int id) {
+    if (id < this->num_sensors) {
+        int new_num_sensors = this->num_sensors - 1;
+        SensorPtr *new_sensors = new SensorPtr[new_num_sensors];
+
+        int i;
+
+        for (i = 0; i < this->num_sensors; i++) {
+            if (i == id) {
+                delete this->sensors[i];
+            } else {
+                new_sensors[i] = this->sensors[i];
+                new_sensors[i]->setId(i);
+            }
+        }
+
+        delete this->sensors;
+        this->sensors = new_sensors;
+        this->num_sensors = new_num_sensors;
+
+        return true;
+    }
+    
+    return false;
 }
 
 int getNumSensors() {
     return this->num_sensors;
 }
 
-long* getSamples() {
-    int i = 0;
+void getSamples(SamplePtr *samples) {
+    if (samples != NULL) {
+        delete samples;
+    }
+    
+    samples = new SamplePtr[this->num_sensors];
+    int i;
 
     for(i = 0; i < this->num_sensors; i++) {
-        this->last_samples[i] = this->sensors[i]->getSample();
+        samples[i] = this->sensors[i]->getSample();
     }
-
-    return this->last_samples;
 }
 
 void showSamples() {
     int i;
 
     for(i = 0; i < this->num_sensors; i++) {
-        String output = "Sensor: " + this->sensors[i]->getName() + " " + String(this->last_samples[i]);
+        SamplePtr sample = this->sensors[i]->getSample();
+        String output = String(sample->timestamp) + ": " + String(sample->value);
         Serial.println(output);
     }
 }

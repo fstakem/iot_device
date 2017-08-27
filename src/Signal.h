@@ -1,11 +1,11 @@
-#ifndef WAVE_H
-#define WAVE_H
+#ifndef SIGNAL_H
+#define SIGNAL_H
 
 #include <Wire.h>
 #include <Arduino.h>
 
 
-class Wave {
+class Signal {
 
 // PRIVATE
 // ------------------------------------------------------------------------------------------
@@ -16,11 +16,11 @@ private:
 // ------------------------------------------------------------------------------------------
 public:
 
-Wave() {
+Signal() {
     
 }
 
-~Wave() {
+~Signal() {
 
 }
 

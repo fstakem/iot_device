@@ -1,22 +1,32 @@
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
-#include "TestDevice.h"
+#include "Sample.h";
+#include "Device.h"
+#include "Transmitter.h"
+#include "SineWave.h"
+//#include "MqttClient.h"
+
+#define STEP_TIME 2000
+#define STEP_ANGLE_RADS 0.261799f
 
 
 // Wifi
 const char* SSID                    = "frugmunster";
-const char* SSID_PASSWORD           = "-";
+const char* SSID_PASSWORD           = "----";
 
 // Loop
 const unsigned long loop_delay      = 3000;
 const int display_interval          = 5000;
 unsigned long last_record_time      = 0;
 
+// Other
+const int MQTT_PORT                 = 1883;
+
 
 // Globals
 WiFiClient wifi_client;
-TestDevice device = TestDevice(1, "device_1", "sine");
-int num_sensors;
+Device device = Device(1, "device_1");
+SamplePtr *samples;
 
 
 // Generic code
@@ -47,21 +57,23 @@ void setup() {
     setupWifi();
     delay(10000);
 
-    num_sensors = device.getNumSensors();
     IPAddress server(192,168,2,207);
+    MqttClient mqtt_client = MqttClient(&device, wifi_client, server, MQTT_PORT);
+    device.createSensor(new SineWave(STEP_TIME, STEP_ANGLE_RADS), new Transmitter());
 }
 
-void showData(long *data) {
+void showSamples() {
     int i;
-    for(i =0; i < num_sensors; i++) {
-        Serial.println("Data " + String(i) + ": " + String(data[i]));
+
+    for (i = 0; i < device.getNumSensors(); i++) {
+        Serial.println(samples[i]->timestamp);
     }
 }
 
 void loop() {
     delay(loop_delay);
-    long *data = device.getSamples();
-    showData(data);
-    device.showSamples();
+    device.getSamples(samples);
+    //device.showSamples();
+    showSamples();
 }
 

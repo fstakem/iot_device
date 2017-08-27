@@ -3,10 +3,10 @@
 
 #include <Wire.h>
 #include <Arduino.h>
-#include "Wave.h"
+#include "Signal.h"
 
 
-class SineWave: public Wave {
+class SineWave: public Signal {
 
 // PRIVATE
 // ------------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ long value;
 public:
 
 SineWave(unsigned long step_time, float step_angle_rads)
-: Wave() {
+: Signal() {
     this->step_time = step_time;
     this->step_angle_rads = step_angle_rads;
     this->last_sample_time = 0;

@@ -1,15 +1,14 @@
-#ifndef TRANSMITTER_H
-#define TRANSMITTER_H
+#ifndef PREDICTIVE_TRANSMITTER_H
+#define PREDICTIVE_TRANSMITTER_H
 
 #include <Wire.h>
 #include <Arduino.h>
-#include "Sample.h"
+#include "Transmitter.h"
+#include "Sensor.h"
 
 
-typedef Sample* SamplePtr;
 
-
-class Transmitter {
+class PredictiveTransmitter {
 
 // PRIVATE
 // ------------------------------------------------------------------------------------------
@@ -19,16 +18,16 @@ private:
 // ------------------------------------------------------------------------------------------
 protected:
 
-
 // PUBLIC
 // ------------------------------------------------------------------------------------------
 public:
 
-Transmitter() {
+PredictiveTransmitter()
+: Transmitter() {
     
 }
 
-~Transmitter() {
+~PredictiveTransmitter() {
 
 }
 
